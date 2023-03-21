@@ -23,8 +23,7 @@ def daily_mean(data):
     """Calculate the daily mean of a 2D inflammation data array for each day.
 
     :param data:
-        A 2D data array with inflammation data (each row contains measurements
-        for a single patient across all days).
+        A 2D data array with inflammation data (each row contains measurements for a single patient across all days).
     :returns:
         An array of mean values of measurements for each day.
     """
