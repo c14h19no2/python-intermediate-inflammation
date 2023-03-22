@@ -58,11 +58,11 @@ def test_daily_mean_integers():
         ([ [4, 2, 5], [1, 6, 2], [4, 1, 9] ], [4, 6, 9]),
         ([ [4, -2, 5], [1, -6, 2], [-4, -1, 9] ], [4, -1, 9]),
     ])
+
 def test_daily_max(test, expected):
     """Test max function works for zeroes, positive integers, mix of positive/negative integers."""
     from inflammation.models import daily_max
     npt.assert_array_equal(daily_max(np.array(test)), np.array(expected))
-
 
 @pytest.mark.parametrize(
     "test, expected",
@@ -75,7 +75,6 @@ def test_daily_min(test, expected):
     """Test min function works for zeroes, positive integers, mix of positive/negative integers."""
     from inflammation.models import daily_min
     npt.assert_array_equal(daily_min(np.array(test)), np.array(expected))
-
 
 @pytest.mark.parametrize(
     "test, expected, expect_raises",
@@ -126,6 +125,7 @@ def test_daily_min(test, expected):
             TypeError,
         ),
     ])
+
 def test_patient_normalise(test, expected, expect_raises):
     """Test normalisation works for arrays of one and positive integers."""
     from inflammation.models import patient_normalise
@@ -139,12 +139,23 @@ def test_patient_normalise(test, expected, expect_raises):
 
 
 @pytest.mark.parametrize(
-    "test, expected",
+    "test, expected, expected_raises",
     [
-        ([ [0, 0], [0, 0], [0, 0] ], [0, 0]),
-        ([ [1, 2], [3, 4], [5, 6] ], [1.633, 1.633]),
+        ([[0, 0], [0, 0], [0, 0]], [0, 0], None),
+        ([[1, 2], [3, 4], [5, 6]], [1.633, 1.633], None),
+        ([[10, 1], [100, 10], [1000, 100]], [446.990, 44.699], None),
+        ([[-15, 15], [-30, -30], [-45, 45]], [12.247, 30.822], None),
+        (['Hello'], None, TypeError),
+
     ])
-def test_patient_std(test, expected):
-    """Test mean function works for array of zeroes and positive integers."""
+def test_patient_std(test, expected, expected_raises):
+    """Test add-std-dev function works for array of zeroes, positive and negative integers."""
     from inflammation.models import patient_std
-    npt.assert_almost_equal(patient_std(np.array(test)), np.array(expected), decimal=2)
+    if isinstance(test, list):
+        test = np.array(test)
+
+    if expected_raises is not None:
+        with pytest.raises(expected_raises):
+                npt.assert_almost_equal(patient_std(np.array(test)), np.array(expected), decimal=2)
+    else:
+        npt.assert_almost_equal(patient_std(np.array(test)), np.array(expected), decimal=2)

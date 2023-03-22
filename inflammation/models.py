@@ -106,4 +106,7 @@ def patient_std(data):
     :returns:
         An array of minimum values of measurements for each day.
     """
-    return np.nanstd(data, axis=0)
+
+    if not (isinstance(data, np.ndarray) or isinstance(data, list)):
+        raise TypeError('data input should be ndarray')
+    return np.std(data, axis=0)
