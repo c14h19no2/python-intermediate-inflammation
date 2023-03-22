@@ -136,3 +136,15 @@ def test_patient_normalise(test, expected, expect_raises):
             npt.assert_almost_equal(patient_normalise(test), np.array(expected), decimal=2)
     else:
         npt.assert_almost_equal(patient_normalise(test), np.array(expected), decimal=2)
+
+
+@pytest.mark.parametrize(
+    "test, expected",
+    [
+        ([ [0, 0], [0, 0], [0, 0] ], [0, 0]),
+        ([ [1, 2], [3, 4], [5, 6] ], [1.633, 1.633]),
+    ])
+def test_patient_std(test, expected):
+    """Test mean function works for array of zeroes and positive integers."""
+    from inflammation.models import patient_std
+    npt.assert_almost_equal(patient_std(np.array(test)), np.array(expected), decimal=2)
